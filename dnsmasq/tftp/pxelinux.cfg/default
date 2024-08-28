@@ -4,4 +4,4 @@ timeout 30
 label linux
         kernel /images/noble/vmlinuz
         ipappend 1
-        append initrd=/images/noble/initrd netboot=nfs nfsroot=pxe.home:/mnt/external_hdd1/nfs/ubuntu_iso autoinstall ds=nocloud-net;s=http://pxe.home/autoinstall/
+        append initrd=/images/noble/initrd netboot=nfs nfsroot=pxe.home:/ autoinstall ds=nocloud-net;s=http://pxe.home/autoinstall/
