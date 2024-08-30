@@ -25,32 +25,52 @@ services:
   #   ports:
   #     - 2049:2049
 
-  nfs:
-    image: erichough/nfs-server
-    restart: unless-stopped
-    cap_add:
-      - SYS_ADMIN
-    # ports:
-    #   - 2049:2049
-    #   - 2049:2049/udp
-    #   - 111:111
-    #   - 111:111/udp
-    #   - 32765:32765
-    #   - 32765:32765/udp
-    #   - 32767:32767
-    #   - 32767:32767/udp
-    network_mode: host
-    environment:
-      NFS_EXPORT_0: '/nfs-export *(rw,fsid=0,sync,no_subtree_check,no_root_squash)'
-    volumes:
-      - ./nfs/export:/nfs-export
-    deploy:
-      resources:
-        limits:
-          memory: 1g
-        reservations:
-          memory: 1g
+  # nfs:
+  #   image: erichough/nfs-server
+  #   restart: unless-stopped
+  #   cap_add:
+  #     - SYS_ADMIN
+  #   privileged: true
+  #   ports:
+  #     - 2049:2049
+  #     - 2049:2049/udp
+  #     - 111:111
+  #     - 111:111/udp
+  #     - 32765:32765
+  #     - 32765:32765/udp
+  #     - 32767:32767
+  #     - 32767:32767/udp
+  #   environment:
+  #     NFS_EXPORT_0: '/nfs-export *(ro,fsid=0,sync,no_subtree_check,no_root_squash,insecure)'
+  #   volumes:
+  #     - ./nfs/export:/nfs-export
+        
+  # nfs:
+  #   image: tangjiujun/nfs-server:v1.0
+  #   restart: unless-stopped
+  #   privileged: true
+  #   ports:
+  #     - 2049:2049
+  #     - 2049:2049/udp
+  #     - 111:111
+  #     - 111:111/udp
+  #     - 32765:32765
+  #     - 32765:32765/udp
+  #     - 32767:32767
+  #     - 32767:32767/udp
+  #   volumes:
+  #     - ./nfs/export:/nfsshare
 
+  nfs:
+    image: nfs
+    build:
+      context: nfs
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    privileged: true
+    network_mode: host
+    volumes:
+      - ./nfs/export:/nfsshare
 
   nginx:
     image: nginx
