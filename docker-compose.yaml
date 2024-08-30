@@ -14,16 +14,43 @@ services:
       - ./dnsmasq/tftp:/var/tftp
     restart: always
 
+  # nfs:
+  #   image: itsthenetwork/nfs-server-alpine
+  #   restart: unless-stopped
+  #   privileged: true
+  #   environment:
+  #     - SHARED_DIRECTORY=/nfs-export
+  #   volumes:
+  #     - ./nfs/export:/nfs-export
+  #   ports:
+  #     - 2049:2049
+
   nfs:
-    image: itsthenetwork/nfs-server-alpine
+    image: erichough/nfs-server
     restart: unless-stopped
-    privileged: true
+    cap_add:
+      - SYS_ADMIN
+    # ports:
+    #   - 2049:2049
+    #   - 2049:2049/udp
+    #   - 111:111
+    #   - 111:111/udp
+    #   - 32765:32765
+    #   - 32765:32765/udp
+    #   - 32767:32767
+    #   - 32767:32767/udp
+    network_mode: host
     environment:
-      - SHARED_DIRECTORY=/nfs-export
+      NFS_EXPORT_0: '/nfs-export *(rw,fsid=0,sync,no_subtree_check,no_root_squash)'
     volumes:
       - ./nfs/export:/nfs-export
-    ports:
-      - 2049:2049
+    deploy:
+      resources:
+        limits:
+          memory: 1g
+        reservations:
+          memory: 1g
+
 
   nginx:
     image: nginx
